@@ -22,6 +22,6 @@
             <operation>greaterThan</operation>
             <value>1000000</value>
         </criteriaItems>
-        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+        <triggerType>onAllChanges</triggerType>
     </rules>
 </Workflow>
