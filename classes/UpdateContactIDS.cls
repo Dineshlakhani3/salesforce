@@ -6,7 +6,6 @@ public class UpdateContactIDS {
             setOfAcctIDS.add(c.AccountId);
         }
         
-        List<Account> acctWhichIsNull=new List<Account>();
         Map<Id,Account> acctWhichIsNullMap =new Map<Id,Account>();
         List<Account> acctWhichIsFill=new List<Account>();
         
@@ -14,7 +13,6 @@ public class UpdateContactIDS {
         
         for(Account a : accts){
             if(a.ContactIDs__c == null){
-                acctWhichIsNull.add(a);
                 acctWhichIsNullMap.put(a.Id, a);
             }else{
                 acctWhichIsFill.add(a);
@@ -30,12 +28,12 @@ public class UpdateContactIDS {
                 if(mapOfModifiedValues.containsKey(ctID.AccountID)){
                     ids=mapOfModifiedValues.get(ctID.AccountID);
                 }
-                ids+=ctID+',';
+                ids+=ctID.id+',';
                 mapOfModifiedValues.put(ctID.AccountID, ids);
             }
         }
         
-        for(Account acct:acctWhichIsNull){
+        for(Account acct:acctWhichIsNullMap.values()){
                     acct.ContactIDs__c= mapOfModifiedValues.get(acct.id);
                     acctsUpdate.add(acct);
         }
@@ -45,11 +43,13 @@ public class UpdateContactIDS {
                 String[] existIds= str.split(','); 
                 Set<String> setOFIds=new Set<String>(existIds);
                 if(!setOFIds.contains(contactID)){
-                str = str + contactID + ',';
+                str += contactID + ',';
                 fillAcct.ContactIDs__c = str ;
                 acctsUpdate.add(fillAcct);
               }
         }
-        update accts;
+        if(acctsUpdate.size()>0){
+        	update acctsUpdate;
+        }
     }
 }
