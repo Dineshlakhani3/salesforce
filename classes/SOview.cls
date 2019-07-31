@@ -1,6 +1,12 @@
 public class SOview {
-    public static void pd(){
-     Map<String, Schema.SObjectType> gd = Schema.getGlobalDescribe();
-        System.debug(gd);
+    public static void showSobjects(){
+        List<string> SObjectList = new List<string>();
+        
+        for(Schema.SObjectType objTyp : Schema.getGlobalDescribe().Values()){
+            String name = objTyp.getDescribe().getName();
+                   SobjectList.add(name);
+                   System.debug( 'Object Name : ' + name);
+        }
+                   System.debug( 'All sObjects : ' + SObjectList);
     }
 }
