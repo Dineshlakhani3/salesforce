@@ -14,6 +14,14 @@
                 <behavior>Edit</behavior>
                 <field>ProductCode</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Required</behavior>
+                <field>Price_per_unit__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Required</behavior>
+                <field>quantity_Available__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>

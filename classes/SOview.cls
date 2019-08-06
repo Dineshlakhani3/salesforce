@@ -1,7 +1,14 @@
 public class SOview {
-    public static void pd(){
-        List<org__c> l=[select id from org__c];
-            System.debug(l);
+    public static void showSobjects(){
+        List<string> SObjectList = new List<string>();
+        
+        for(Schema.SObjectType objTyp : Schema.getGlobalDescribe().Values()){
+            String name = objTyp.getDescribe().getName();
+                   SobjectList.add(name);
+                   System.debug( 'Name : ' + name);
+        }
+        
+        
+                   System.debug( 'All sObjects : ' + SObjectList);
     }
-
 }

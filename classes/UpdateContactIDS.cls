@@ -1,44 +1,55 @@
 public class UpdateContactIDS {
-    public static void updateID(String i){
-        List<Account> accts=[select id, ContactIDs__c from account];
-        List<id> idWhichIsNull=new List<ID>();
-        List<id> idWhichIsFill=new List<ID>();
+    public static void updateID(String contactID){
+        List<Contact> loc=[select AccountId from Contact where id = :contactID];
+        Set<ID> setOfAcctIDS=new Set<ID>();
+        for(Contact c: loc){
+            setOfAcctIDS.add(c.AccountId);
+        }
+        
+        Map<Id,Account> acctWhichIsNullMap =new Map<Id,Account>();
+        List<Account> acctWhichIsFill=new List<Account>();
+        
+        List<Account> accts=[Select id, ContactIDs__c from Account where id in :setOfAcctIDS];
         
         for(Account a : accts){
             if(a.ContactIDs__c == null){
-                idWhichIsNull.add(a.id);
+                acctWhichIsNullMap.put(a.Id, a);
             }else{
-                idWhichIsFill.add(a.id);
+                acctWhichIsFill.add(a);
+            }
+        }
+        List<Account> acctsUpdate=new List<Account>();
+        
+        Map<Id, String> mapOfModifiedValues = new Map<Id,String>();
+        List<Contact> listOfContactID = [Select id, AccountID from contact where Accountid IN : acctWhichIsNullMap.keySet()];
+        if(listOfContactID.size()>0){
+            for(Contact ctID : listOfContactID){
+                String ids ='';
+                if(mapOfModifiedValues.containsKey(ctID.AccountID)){
+                    ids=mapOfModifiedValues.get(ctID.AccountID);
+                }
+                ids+=ctID.id+',';
+                mapOfModifiedValues.put(ctID.AccountID, ids);
             }
         }
         
-        List<Account> acctsUpdate=new List<Account>();
-        for(ID inull:idWhichIsNull){
-            Account acct=new Account();
-            List<Contact> listOfContactID = [Select id from contact where Accountid = :inull];
-                if(listOfContactID.size()>0){
-               	  String ids ='';
-                	for(Contact ctID : listOfContactID){
-                    ids=ids+ ctID.id +  ',';
-                	}  
-                    acct.Id = inull;
-                    acct.ContactIDs__c= ids;
+        for(Account acct:acctWhichIsNullMap.values()){
+                    acct.ContactIDs__c= mapOfModifiedValues.get(acct.id);
                     acctsUpdate.add(acct);
-                }
         }
-        for(ID ifill:idWhichIsFill){
-             List<Account> listOfContactID = [Select ContactIDs__c from account where id = :ifill];
-            String str=listOfContactID[0].ContactIDs__c;
+        
+        for(Account fillAcct:acctWhichIsFill){            
+            String str=fillAcct.ContactIDs__c;
                 String[] existIds= str.split(','); 
                 Set<String> setOFIds=new Set<String>(existIds);
-                if(!setOFIds.contains(i)){
-                    str = str + i + ',';
-                Account acct=new Account();
-                acct.id=ifill;
-                acct.ContactIDs__c = str ;
-                acctsUpdate.add(acct);
+                if(!setOFIds.contains(contactID)){
+                str += contactID + ',';
+                fillAcct.ContactIDs__c = str ;
+                acctsUpdate.add(fillAcct);
               }
         }
-        update accts;
+        if(acctsUpdate.size()>0){
+        	update acctsUpdate;
+        }
     }
 }

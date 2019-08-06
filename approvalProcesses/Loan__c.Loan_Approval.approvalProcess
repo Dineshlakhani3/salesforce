@@ -8,6 +8,9 @@
     <approvalPageFields>
         <field>Name</field>
         <field>Owner</field>
+        <field>Amount__c</field>
+        <field>City__c</field>
+        <field>Address__c</field>
     </approvalPageFields>
     <approvalStep>
         <allowDelegate>false</allowDelegate>
