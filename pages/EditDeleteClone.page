@@ -1,0 +1,33 @@
+<apex:page standardController="Contact" extensions="CloneController">
+    <head>
+        <style> 
+            .recordtype { font: bold 30px; color: White; background-color: BLue; } 
+        </style>
+    </head>    
+    <apex:form >
+        <apex:pageBlock title="Edit Contact">
+            <center>
+                <h1>
+                    <apex:outputText value="{!Contact.RecordType.name} Teacher" styleClass="recordtype"/>
+                </h1>
+            </center> 
+            <apex:pageBlockSection columns="2">
+                <apex:outputField value="{! Contact.Owner.Name }" label="Contact owner"/>
+                <apex:outputField value="{! Contact.Phone }"/>
+                <apex:outputField value="{! Contact.name }"/>
+                <apex:outputField value="{! Contact.homephone }"/>
+                <apex:outputField value="{! Contact.Account.name }"/>
+                <apex:outputField value="{! Contact.mobilephone }"/>
+                <apex:outputField value="{! Contact.title }"/>
+                <apex:outputField value="{! Contact.OtherPhone }"/>
+                <apex:outputField value="{! Contact.Department }"/>
+                <apex:outputField value="{! Contact.fax }"/>
+            </apex:pageBlockSection>
+            <apex:pageBlockButtons location="top">
+                <apex:commandButton action="{! edit }" value="Edit" />     
+                <apex:commandButton action="{! delete }" value="Delete" />     
+                <apex:commandButton action="{! cloneContact}" value="Clone" />        
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

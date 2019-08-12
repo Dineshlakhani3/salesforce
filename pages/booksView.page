@@ -1,0 +1,18 @@
+<apex:page standardController="Book__c" extensions="BookExtension" > 
+
+    <apex:pageBlock title="{!Book__c.Name}">
+        <apex:pageBlockSection >
+    
+        <apex:repeat value="{!accessibleFields}" var="f">
+            <apex:pageBlockSectionItem >
+            
+                <apex:outputLabel value="{!$ObjectType['Book__c'].Fields[f].Label}"/>
+                <apex:outputText value="{!Book__c[f]}"/>
+                    
+            </apex:pageBlockSectionItem>
+        </apex:repeat>
+        
+        </apex:pageBlockSection>
+    </apex:pageBlock>
+
+</apex:page>

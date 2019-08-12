@@ -1,0 +1,136 @@
+<apex:page controller="EcartWorkshopController">
+    <apex:form id="main_block" >
+        <apex:outputPanel rendered="{!mainview}">
+            <apex:pageBlock title="Order History">
+                <apex:pageBlockSection columns="1" id="order_list" rendered="{!listOfOrder.size!=0}">
+                    <apex:pageBlockTable value="{! listOfOrder}" var="lof">
+                        <apex:column value="{! lof.id}"/>
+                        <apex:column value="{! lof.Order_Price__c}"/>
+                        <apex:column value="{! lof.status__c}"/>
+                    </apex:pageBlockTable>
+                    <p>
+                        <apex:outputPanel style="text-align:left; width=100%"  layout="block">
+                            <apex:commandButton value="First" reRender="order_list" action="{! orderController.first }" disabled="{!NOT(orderController.hasPrevious)}"/>
+                            <apex:commandButton value="Previous" rerender="order_list" action="{!orderController.previous}" disabled="{!NOT(orderController.hasPrevious)}"/>
+                            <apex:commandButton value="Next" rerender="order_list" action="{!orderController.next}" disabled="{!NOT(orderController.hasNext)}"/>
+                            <apex:commandButton value="Last" rerender="order_list" action="{!orderController.last}" disabled="{!NOT(orderController.hasNext)}"/>
+                            <apex:outputLabel value="Page {!(orderController.pageNumber*8)-7}-{!if(listOfOrder.size<8,(((orderController.pageNumber-1)*8)+listOfOrder.size),orderController.pageNumber*8)} of {!totalOrders.size}" rendered="{!totalOrders.size>1}"/>          
+                        </apex:outputPanel>
+                    </p>
+                </apex:pageBlockSection>
+            </apex:pageBlock>
+            
+            <apex:outputPanel style="text-align:center; width=100%; margin:10px"  layout="block">
+                <apex:commandButton action="{! showProduct }" value="Add new purchase" reRender="products"/>        
+            </apex:outputPanel>
+            <apex:outputPanel id="products" style="marginTop :100px">  
+                <apex:pageBlock title="Products" rendered="{!wrapperRecordList!=null}">
+                    <table style="width: 100%">
+                        <tr>
+                            <td>                           
+                                <apex:inputText value="{!search}" html-placeholder="Search Product">
+                                    <apex:actionSupport action="{!dosearch}" event="onkeyup" reRender="product_list" />
+                                </apex:inputText>
+                            </td>            
+                            <td align="center">
+                            </td>
+                            
+                            <td align="right">
+                                <apex:commandButton value="Add to cart" reRender="cart" action="{!initCart}"/>
+                            </td>
+                        </tr>
+                    </table>
+                    <apex:pageBlockSection id="product_list" columns="1">
+                        <apex:pageBlockTable value="{! wrapperRecordList}" var="wrap">
+                            <apex:column headerValue="Select Product">
+                                <apex:inputCheckbox value="{!wrap.selected}">
+                                    <apex:actionSupport action="{!updateSearchItemsMap}" event="onclick" reRender="product_list"/>
+                                </apex:inputCheckbox>
+                            </apex:column>
+                            <apex:column value="{! wrap.productRecord.name}"/>
+                            <apex:column value="{! wrap.productRecord.ProductCode}"/>
+                            <apex:column value="{! wrap.productRecord.Description}"/>
+                            <apex:column value="{! wrap.productRecord.Price_per_unit__c}"/>
+                            <apex:column value="{! wrap.productRecord.quantity_Available__c}"/>
+                        </apex:pageBlockTable>
+                        <p>
+                            <apex:outputPanel style="text-align:left; width=100%"  layout="block">
+                                <apex:commandButton value="First" reRender="product_list" action="{!first}" disabled="{!NOT(hasPrevious)}"/>
+                                <apex:commandButton value="Previous" rerender="product_list" action="{!previous}" disabled="{!NOT(hasPrevious)}"/>
+                                <apex:commandButton value="Next" rerender="product_list" action="{!next}" disabled="{!NOT(hasNext)}"/>
+                                <apex:commandButton value="Last" rerender="product_list" action="{!last}" disabled="{!NOT(hasNext)}"/>
+                                <apex:outputLabel value="Page {!(pageNumber*2)-1}-{!if(wrapperRecordList.size==1,((pageNumber*2)-1),pageNumber*2)} of {!product.size}" rendered="{!product.size>1}"/>          
+                            </apex:outputPanel>
+                        </p>
+                    </apex:pageBlockSection>
+                </apex:pageBlock>
+            </apex:outputPanel>        
+            
+            <apex:outputPanel id="cart">  
+                <apex:outputPanel rendered="{!selectedWrapperRecordList!=null && selectedWrapperRecordList.size>0}">
+                    <apex:pageBlock title="Cart Items">
+                        <apex:pageBlock rendered="{!maxQtyReachError!=''}" title="Checkout Error">
+                            <apex:outputLabel escape="false" value="{!maxQtyReachError}"/> 
+                        </apex:pageBlock>
+                        <apex:pageBlockSection id="cart_list" columns="1">
+                            <apex:pageBlockTable value="{! selectedWrapperRecordList}" var="wrap">
+                                <apex:column value="{! wrap.productRecord.name}"/>
+                                <apex:column value="{! wrap.productRecord.ProductCode}"/>
+                                <apex:column headerValue="Qty">
+                                    <apex:inputText value="{! wrap.qty}"/>
+                                </apex:column>
+                                <apex:column value="{! wrap.productRecord.Price_per_unit__c}"/>
+                                <apex:column >
+                                    <apex:image url="{!URLFOR($Resource.jQueryMobile, 'jquery.mobile-1.4.5/images/icons-png/delete-black.png')}" />
+                                    <apex:actionSupport event="onclick" action="{!removeItemsMap}" reRender="cart">
+                                        <apex:param assignTo="{!proId}" name="proId" value="{!wrap.productRecord.id}"/>
+                                    </apex:actionSupport>
+                                </apex:column>
+                            </apex:pageBlockTable>
+                            <apex:outputPanel style="text-align:center; width=100%; margin:10px" layout="block">
+                                <apex:commandButton action="{!checkout}" value="Checkout" reRender="main_block"/>        
+                            </apex:outputPanel>                       
+                        </apex:pageBlockSection>
+                    </apex:pageBlock>
+                    
+                    
+                    
+                </apex:outputPanel>  
+            </apex:outputPanel>
+        </apex:outputPanel>
+        
+        <apex:outputPanel id="place_order" rendered="{!not(mainview)}">
+            <apex:pageBlock >
+                <table style="width: 100%">
+                    <tr>
+                        <td>                           
+                            Invoice No. : #{!invoiceNo}
+                        </td>
+                        
+                        <td align="right">
+                            <apex:outputText value="Order Date : {0,date,dd.MMM.yyyy}">
+                                <apex:param value="{!NOW()}" />
+                            </apex:outputText>
+                        </td>
+                    </tr>
+                </table>
+                <apex:pageBlockSection id="Place_list" columns="1">
+                    <apex:pageBlockTable value="{! selectedWrapperRecordList}" var="wrap">
+                        <apex:column value="{! wrap.productRecord.name}"/>
+                        <apex:column value="{! wrap.productRecord.ProductCode}"/>
+                        <apex:column value="{! wrap.qty}" headerValue="Qty"/>
+                        <apex:column value="{! wrap.productRecord.Price_per_unit__c}"/>
+                        <apex:column value="{! wrap.total}" headerValue="Total"/>
+                    </apex:pageBlockTable>
+                    <apex:outputPanel style="text-align:right; width=100%; margin:10px" layout="block">
+                        Total price : ${!total}
+                    </apex:outputPanel>                       
+                </apex:pageBlockSection>
+            </apex:pageBlock>
+            
+            <apex:outputPanel style="text-align:center; width=100%; margin:10px" layout="block">
+                <apex:commandButton value="Place Order" action="{!placeOrder}" />
+            </apex:outputPanel>
+        </apex:outputPanel>
+    </apex:form>
+</apex:page>

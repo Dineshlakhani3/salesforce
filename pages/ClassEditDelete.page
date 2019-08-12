@@ -1,0 +1,33 @@
+<apex:page standardController="Class__c" recordSetVar="Class__c" extensions="ClassEditController">
+    <apex:form >
+        <apex:pageBlock title="Class List" id="Class_list">
+            <apex:pageBlockTable value="{! Class__c  }" var="c">
+                <apex:column width="10px">
+                    <apex:commandLink action="{!accountDetail}" reRender="edit_class" value="Edit">
+                        	<apex:param assignTo="{!clsId}" name="clsname" value="{!c.id}"/>
+                    </apex:commandLink>
+				</apex:column>
+                <apex:column >
+                    <apex:outputLink value="{! URLFOR($Action.Class__C.Delete, c.Id) }">
+                        Del
+                    </apex:outputLink>
+                </apex:column>
+                <apex:column value="{! c.name }"/>
+            </apex:pageBlockTable>
+        </apex:pageBlock>
+        
+         <apex:pageBlock title="Edit Class" id="edit_class">
+            <apex:pageMessages />
+            <apex:pageBlockSection columns="1">
+                <apex:inputField value="{! cls.Name }"/>
+                <apex:inputField value="{! cls.Board__c }"/>
+                <apex:inputField value="{! cls.ClassTeacher__c }"/>
+                <apex:inputField value="{! cls.Custom_Status__c }"/>
+            </apex:pageBlockSection>
+            <apex:pageBlockButtons location="top">
+                <apex:commandButton action="{! saveClass }" value="Save" />        
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+        
+    </apex:form>
+</apex:page>

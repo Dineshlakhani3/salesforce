@@ -1,0 +1,45 @@
+<apex:page Controller="AccountController">
+    <apex:form >
+        <apex:pageBlock title="Account Search">
+            <apex:pageBlockSection columns="2">
+                <apex:inputText value="{!count}" label="Number of accounts to show"/>  
+                <apex:inputText value="{!billingCity}" label="billingCity"/>  
+                <apex:inputText value="{!billingState}" label="billingState"/>  
+                <apex:inputText value="{!billingCountry}" label="billingCountry"/>   
+            </apex:pageBlockSection>
+            
+            
+            <apex:pageBlockButtons location="top">
+                <apex:commandButton action="{! getAccountsList }" reRender="accounts_list" value="Search" />        
+            </apex:pageBlockButtons>
+            
+        </apex:pageBlock>
+        
+        <apex:pageBlock title="Account List" id="accounts_list" >
+            <apex:pageBlockTable value="{! listOfAccounts }" var="acc">
+                <apex:column value="{! acc.Name }"/>
+                <apex:column value="{! acc.BillingCity }"/>
+                <apex:column value="{! acc.BillingState }"/>
+                <apex:column value="{! acc.BillingCountry }"/>
+            </apex:pageBlockTable>
+            <table style="width: 100%">
+                <tr>
+                    <td align="left">                
+                        <apex:commandLink action="{! controller.first }" value="« First" reRender="accounts_list" rendered="{! controller.hasPrevious }"/>
+                        <apex:outputText style="color: #ccc;" value="« First" rendered="{! NOT(controller.hasPrevious) }"/>
+                        &nbsp;&nbsp;  
+                        <apex:commandLink action="{! controller.previous }" value="<Prev" reRender="accounts_list" rendered="{! controller.hasPrevious }"/>
+                        <apex:outputText style="color: #ccc;" value="<Prev" rendered="{! NOT(controller.hasPrevious) }"/>
+                        &nbsp;&nbsp;  
+                        <apex:commandLink action="{! controller.next }" value="Next>" reRender="accounts_list" rendered="{! controller.hasNext }"/>
+                        <apex:outputText style="color: #ccc;" value="Next>" rendered="{! NOT(controller.hasNext) }"/>
+                        &nbsp;&nbsp;  
+                        <apex:commandLink action="{! controller.last }" value="Last »" reRender="accounts_list" rendered="{! controller.hasNext }"/>
+                        <apex:outputText style="color: #ccc;" value="Last »" rendered="{! NOT(controller.hasNext) }"/>
+                    </td>
+                </tr></table>
+        </apex:pageBlock>
+        
+        
+    </apex:form>
+</apex:page>

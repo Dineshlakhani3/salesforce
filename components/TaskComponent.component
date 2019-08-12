@@ -1,0 +1,41 @@
+<apex:component controller="TaskComponentController">
+    <apex:attribute name="myquery" description="query" type="string" required="true" assignTo="{!query}"/>
+        <apex:pageBlock >
+            {!ObjectData}
+            <apex:outputPanel rendered="{!error==''}">
+                <apex:pageblock title="Query Results">
+                    <apex:outputPanel rendered="{!listOfObject!=null}">
+                        <apex:pageBlockTable value="{!listOfObject}" var="rec">
+                            <apex:repeat value="{!lstFlds}" var="fld">
+                                <apex:column value="{!rec[fld]}">
+                                    <apex:facet name="header">
+                                        <apex:commandLink action="{! sortData }" reRender="data_list" value="{!fld}">
+                                            <apex:param assignTo="{!Sortby}" name="sortname" value="{!fld}"/>
+                                        </apex:commandLink>
+                                    </apex:facet>
+                                </apex:column>
+                            </apex:repeat>
+                        </apex:pageBlockTable>    
+                        <p>
+                            <apex:outputPanel style="text-align:left; width=100%"  layout="block" rendered="{!(dataController.hasPrevious || dataController.hasNext)}">
+                                <apex:commandButton value="First" reRender="data_list" action="{! dataController.first }" disabled="{!NOT(dataController.hasPrevious)}"/>
+                                <apex:commandButton value="Previous" rerender="data_list" action="{!dataController.previous}" disabled="{!NOT(dataController.hasPrevious)}"/>
+                                <apex:commandButton value="Next" rerender="data_list" action="{!dataController.next}" disabled="{!NOT(dataController.hasNext)}"/>
+                                <apex:commandButton value="Last" rerender="data_list" action="{!dataController.last}" disabled="{!NOT(dataController.hasNext)}"/>
+                                <apex:outputLabel value="Page {!(dataController.pageNumber*5)-4}-{!if(listOfObject.size<5,(((dataController.pageNumber-1)*5)+listOfObject.size),dataController.pageNumber*5)} of {!lstObjs.size}" rendered="{!lstObjs.size!=null && lstObjs.size>0}"/>          
+                                &nbsp;&nbsp;
+                                <apex:inputText style="width:20%" value="{! page}"/>&nbsp;&nbsp;
+                                <apex:commandButton value="Go" action="{!goToPage}" reRender="data_list"/>
+                            </apex:outputPanel>
+                        </p>
+                    </apex:outputPanel>
+                </apex:pageblock>
+            </apex:outputPanel>
+            
+            <apex:outputPanel rendered="{!error!=''}"> 
+                <apex:pageblock title="Query Error">
+                    {!error}
+                </apex:pageblock>
+            </apex:outputPanel>       
+        </apex:pageBlock>
+</apex:component>

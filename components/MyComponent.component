@@ -1,0 +1,12 @@
+<apex:component controller="myComponentController">
+    <apex:attribute name="username" description="my user name" type="string" 
+                    required="true" assignTo="{!controllerValue}" />
+    
+    <apex:pageBlock title="My Custom Component">
+      <p>
+        <code>componentValue</code> is "{!username}"
+        <br/>
+        <code>controllerValue</code> is "{!controllerValue}"
+      </p>
+    </apex:pageBlock>
+</apex:component>

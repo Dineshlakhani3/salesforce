@@ -1,0 +1,13 @@
+<apex:page standardController="Class__c">
+    <apex:form >
+        <apex:pageBlock title="Edit Class">
+            <apex:pageMessages />
+            <apex:pageBlockSection columns="1">
+                <apex:inputField value="{! Class__c.Name }"/>
+            </apex:pageBlockSection>
+            <apex:pageBlockButtons location="top">
+                <apex:commandButton action="{! save }" value="Save" />        
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

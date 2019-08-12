@@ -1,0 +1,5 @@
+<apex:page >    
+    <apex:pageBlock title="Image" rendered="false">
+        <apex:image url="https://developer.salesforce.com/files/salesforce-developer-network-logo.png" width="1000px"/>
+    </apex:pageBlock>
+</apex:page>

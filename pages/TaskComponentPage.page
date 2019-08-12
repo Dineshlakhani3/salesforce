@@ -1,0 +1,13 @@
+<apex:page controller="TaskComponentController">
+    <apex:form >
+        <apex:pageBlock title="Query Editor">
+            <apex:messages />
+            <apex:inputText style="width:50%" value="{! query}" id="querytext"/>&nbsp;&nbsp;&nbsp;&nbsp;
+            <apex:commandButton action="{!getObjectData}" value="Execute" reRender="data_list"/>
+        </apex:pageBlock>
+        
+          <apex:outputPanel id="data_list">
+                <c:TaskComponent myquery="{!query}"/>
+        </apex:outputPanel>
+    </apex:form>
+</apex:page>

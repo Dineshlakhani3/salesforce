@@ -1,0 +1,36 @@
+<apex:page standardController="Account" 
+           extensions="ThemeHandler" showHeader="false">
+
+    <apex:form >
+    <apex:pageBlock id="ThemePreview" >
+      <apex:stylesheet value="{!URLFOR($Resource[selectedTheme], 'styles/styles.css')}"/>
+
+      <h1>Theme Viewer</h1>
+      <p>You can select a theme to use while browsing this site.</p>
+      
+      <apex:pageBlockSection >
+          <apex:outputLabel value="Select Theme: " for="themesList"/>
+          <apex:selectList id="themesList" size="1" value="{!selectedTheme}">
+              <apex:actionSupport event="onchange" rerender="ThemePreview"/>
+              <apex:selectOptions value="{!themeOptions}"/>
+          </apex:selectList>
+      </apex:pageBlockSection>
+      
+      <apex:pageBlockSection >
+      <div class="custom" style="padding: 1em;"><!-- Theme CSS hook -->
+
+          <h2>This is a Sub-Heading</h2>
+          
+          <p>This is standard body copy. Lorem ipsum dolor sit amet, consectetur 
+          adipiscing elit. Quisque neque arcu, pellentesque in vehicula vitae, dictum 
+          id dolor. Cras viverra consequat neque eu gravida. Morbi hendrerit lobortis 
+          mauris, id sollicitudin dui rhoncus nec.</p>
+          
+          <p><apex:image value="{!URLFOR($Resource[selectedTheme], 'cats/kitten1.jpg')}"/></p>
+
+      </div><!-- End of theme CSS hook -->  
+      </apex:pageBlockSection>
+    
+    </apex:pageBlock>
+    </apex:form>
+</apex:page>

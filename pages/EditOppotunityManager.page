@@ -1,0 +1,21 @@
+<apex:page controller="OpportunityContactController" id="pg">
+    <apex:form id="frm">
+        <apex:pageBlock title="Contact List">
+            <apex:outputPanel rendered="{!Items.size == 0}">
+                <b> NO RELATED Account(Manager) CONTACTS FOR THIS Opportunity.</b>
+            </apex:outputPanel>
+            <apex:pageBlockSection columns="2">
+                <tr>
+                <apex:selectRadio value="{!conId}" layout="pageDirection" id="contactRadios">
+                        <apex:selectOptions value="{! Items}"/><br/>
+                    </apex:selectRadio>
+                </tr>
+            </apex:pageBlockSection>
+            <apex:pageBlockButtons location="top">
+                <apex:commandButton action="{! saveOpp }" value="Save"/>
+                <apex:commandButton action="{! clearOpp }" value="Clear" />
+                <apex:commandButton action="{! cancelOpp }" value="Cancel" />
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>
