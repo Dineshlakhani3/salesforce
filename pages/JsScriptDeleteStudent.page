@@ -1,0 +1,29 @@
+<apex:page >
+    <apex:form >
+        <Script src="/soap/ajax/45.0/connection.js" type="text/javascript"></Script>
+        <script>
+        function deleteStudent(){
+            sforce.connection.sessionId = "{!$Api.Session_ID}";
+            var ids = location.search.substr(4).split("%2C");
+             var i=0;
+            while(i<ids.length){
+                var qr = sforce.connection.query("SELECT id,lastname__C FROM student__c where id='"+ids[i]+"'");
+                var records = qr.getArray("records");
+                var delResult = sforce.connection.deleteIds([records[0].Id]);
+                i++;
+            }
+            if(i==ids.length){
+                alert('Students Deleted Successfully');
+                window.location = 'https://ap15.salesforce.com/a02?fcf=00B2v00000EjKmf'
+            }       
+        }
+        
+        function moveBack(){
+                window.location = 'https://ap15.salesforce.com/a02?fcf=00B2v00000EjKmf'
+        }
+        </script>
+    </apex:form>
+    
+    <Button onclick="return deleteStudent();">Continue</Button>
+    <Button onclick="return moveBack();">Go Back</Button>
+</apex:page>

@@ -1,0 +1,33 @@
+<apex:page controller="JSRemoteController">
+    <apex:form >
+        <Script src="/soap/ajax/45.0/connection.js" type="text/javascript"></Script>
+        <script>
+        function getRemoteAccount() {
+            sforce.connection.sessionId = "{!$Api.Session_ID}";
+            var ids = location.search;
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.JSRemoteController.deleteStudents}',
+                ids, 
+                handleResult
+            );
+        }
+        
+        function handleResult(result, event) {
+            if(result!='')
+            alert(result)
+            window.location = 'https://ap15.salesforce.com/a02?fcf=00B2v00000EjKmf'
+        }    
+        
+        function moveBack(){
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.JSRemoteController.goBack}',
+                '', 
+                handleResult
+            );
+        }
+        </script>
+    </apex:form>
+    
+    <Button onclick="return getRemoteAccount();">Continue</Button>
+    <Button onclick="return moveBack();">Go Back</Button>
+</apex:page>

@@ -1,0 +1,45 @@
+<apex:page >
+    <apex:form >
+        <script src="/soap/ajax/46.0/connection.js" type="text/javascript"></script>
+        
+        <script src="/soap/ajax/46.0/apex.js" type="text/javascript"></script>
+        <script>  
+        function setupPage() {
+           var account = new sforce.SObject("Account");
+
+account.Name = "TestingAjaxUpsertTest123456";
+
+account.Phone = "2837484894";
+
+result = sforce.connection.upsert("Id", [account]);
+        }
+        
+        
+        function openHere() {
+            var result = sforce.connection.query("select name, id from account");
+            
+            var queryMore = true;
+            while (queryMore) {
+                var records = result.getArray("records");
+                var sb = new sforce.StringBuffer();
+                
+                for (var i = 0; i < records.length; i++) {
+                    sb.append(records[i].Name).append(",");
+                }
+                
+                log(records.length);
+                log(sb.toString());
+                
+                if (result.getBoolean("done")) {
+                    queryMore = false;
+                } else {
+                    result = sforce.connection.queryMore(result.queryLocator);
+                }
+            }
+        }
+        </script>
+        <body onLoad="setupPage()">
+            
+        </body>
+    </apex:form>
+</apex:page>

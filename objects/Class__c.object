@@ -193,4 +193,21 @@
     <searchLayouts/>
     <sharingModel>ReadWrite</sharingModel>
     <visibility>Public</visibility>
+    <webLinks>
+        <fullName>Add_Student</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Add Student</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>var popupwindow = window.open(&quot;/apex/PopUpPage?Id={!Class__c.Id}&quot;, &quot;&quot;, &quot;width=600,height=200&quot;);
+var timer = setInterval(checkWindow, 500);
+function checkWindow(){
+if(popupwindow.closed){
+clearInterval(timer);
+window.location.reload();
+}
+}</url>
+    </webLinks>
 </CustomObject>

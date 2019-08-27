@@ -1,14 +1,12 @@
-<apex:page standardController="Student__c" extensions="StudentPdfController">
+<apex:page standardController="Student__c" extensions="StudentPdfController" action="{! createPdf }">
     <apex:form >
     <apex:pageBlock title="Student Info">
     <apex:pageBlockSection >
-            First Name: {! Student__c.FirstName__c } <br/>
-            Last Name: {! Student__c.LastName__c } <br/>
-            Contact owner Email: {! Student__c.Class__r.name } <br/>
+            First Name : {! Student__c.FirstName__c } <br/>
+            Last Name : {! Student__c.LastName__c } <br/>
+            Class Name : {! Student__c.Class__r.name } <br/>
+            Gender : {! Student__c.sex__C } <br/>
         </apex:pageBlockSection>
-        <apex:pageBlockButtons >
-        <apex:commandButton action="{! createPdf }" value="save"/>
-        </apex:pageBlockButtons>
     </apex:pageBlock>
     </apex:form>
 </apex:page>

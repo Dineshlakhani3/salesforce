@@ -1,0 +1,20 @@
+<apex:page standardController="Student__c" extensions="JSDeleteExt" recordSetVar="Member">
+    <apex:form >
+        <apex:pageBlock >
+        <apex:outputPanel rendered="{!memList.size>0}">
+            <apex:pageBlockTable value="{!memList}" var="M">
+                <apex:column value="{!M.FirstName__c}"/>
+                <apex:column value="{!M.LastName__c}"/>
+            </apex:pageBlockTable>
+            <apex:outputPanel >
+                <apex:commandButton value="Continue" action="{!deleteRecords}"/>
+                <apex:commandButton value="Cancel" action="{!backToList}"/>
+            </apex:outputPanel>
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{!memList.size==0}">
+            No record Selected
+        </apex:outputPanel>
+    </apex:pageBlock>
+    </apex:form>
+
+</apex:page>

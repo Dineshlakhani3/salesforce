@@ -1,15 +1,21 @@
 <apex:page standardController="Contact" extensions="CloneController">
     <head>
         <style> 
-            .recordtype { font: bold 30px; color: White; background-color: BLue; } 
+            center { 
+            width : 100%;
+            height : 20px;
+            font-size : 16px;
+            font: bold 50px; 
+            color: White; 
+            background-color: BLue; }
         </style>
     </head>    
     <apex:form >
-        <apex:pageBlock title="Edit Contact">
-            <center>
-                <h1>
-                    <apex:outputText value="{!Contact.RecordType.name} Teacher" styleClass="recordtype"/>
-                </h1>
+        <apex:pageBlock title="Teacher Detail">
+                <center>
+                    <h1>
+                        <apex:outputText value="{!Contact.RecordType.name} Teacher"/>
+                    </h1>   
             </center> 
             <apex:pageBlockSection columns="2">
                 <apex:outputField value="{! Contact.Owner.Name }" label="Contact owner"/>

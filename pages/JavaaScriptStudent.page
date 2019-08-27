@@ -1,0 +1,11 @@
+<apex:page docType="html-5.0">
+    <apex:form >
+        <Script>
+            function alertCall(){
+            alert("Hello World");
+            }                    
+        </Script>        
+        
+                <apex:CommandButton value="Hello" onclick="alertCall()" />
+    </apex:form>
+</apex:page>

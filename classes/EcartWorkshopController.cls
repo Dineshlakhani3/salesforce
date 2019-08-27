@@ -7,9 +7,15 @@ public class EcartWorkshopController {
     public Decimal total{get;set;}
     public Integer invoiceNo{get;set;}
     public List<wrapper> wrapperRecordList{get;set;}
-    public List<wrapper> selectedWrapperRecordList{get;set;}
-    Map<Id, wrapper> mapHoldingSelectedRecords{get;set;}
+    public Map<Id, wrapper> mapHoldingSelectedRecords{get;set;}
     public Boolean mainview{get;set;}
+    Public Integer pageNo{get;set;}
+    public integer selectedSize { get { 
+        if(mapHoldingSelectedRecords!=null)
+            return mapHoldingSelectedRecords.size( ); 
+        else
+            return 0;
+    } }
     
     public EcartWorkshopController(){    
         totalOrders = Database.query('select name,Order_Price__c,status__c from Order__c');
@@ -37,23 +43,29 @@ public class EcartWorkshopController {
     
     public void init() {
         wrapperRecordList =  new List<wrapper>();
+        maxQtyReachError='';
         for (Product2 pro : (List<Product2>)setCon.getRecords()) {
             if(mapHoldingSelectedRecords != null && mapHoldingSelectedRecords.containsKey(pro.id)){
-                wrapperRecordList.add(mapHoldingSelectedRecords.get(pro.id));
+                try{
+                    wrapper wr = mapHoldingSelectedRecords.get(pro.id);
+                    if(wr.qty<=0){
+                        wrapperRecordList.add(new wrapper(pro, true, 0));
+                        maxQtyReachError='Quantity can not be Zero or nagetive';
+                    }
+                    else if(wr.qty>wr.productRecord.quantity_Available__c){
+                        wrapperRecordList.add(new wrapper(pro, true, wr.productRecord.quantity_Available__c));
+                        maxQtyReachError+=wr.productRecord.name + ' is out of stock, maximum quantity is '+ wr.productRecord.quantity_Available__c +'.<br/>';
+                    }else
+                    {
+                        wrapperRecordList.add(new wrapper(pro, true, wr.qty));
+                    }
+                }catch(Exception e){
+                    wrapperRecordList.add(new wrapper(pro, true, 1));
+                }
+                
             }
             else{
-                wrapperRecordList.add(new wrapper(pro, false, 1));
-            }
-        }
-    }
-    
-    public void initCart() {
-        selectedWrapperRecordList =  new List<wrapper>();
-        if(mapHoldingSelectedRecords.size()>0){
-            for (Product2 pro :[select id from product2]) {
-                if(mapHoldingSelectedRecords.containsKey(pro.id)){
-                    selectedWrapperRecordList.add(mapHoldingSelectedRecords.get(pro.id));
-                }
+                wrapperRecordList.add(new wrapper(pro, false, 0));
             }
         }
     }
@@ -64,19 +76,18 @@ public class EcartWorkshopController {
         mainview=false;
         total=0;
         maxQtyReachError='';
-        for(wrapper selItem : selectedWrapperRecordList){
+        for(wrapper selItem : mapHoldingSelectedRecords.values()){
             try{
                 if(selItem.qty>selItem.productRecord.quantity_Available__c){
                     maxQtyReachError+=selItem.productRecord.name + ' is out of stock, maximum quantity is '+ selItem.productRecord.quantity_Available__c +'.<br/>';
                     mainview=true;
                 }
-                    selItem.total = selItem.productRecord.Price_per_unit__c * selItem.qty;
+                selItem.total = selItem.productRecord.Price_per_unit__c * selItem.qty;
             }catch(Exception e){
                 selItem.total = selItem.productRecord.Price_per_unit__c * 1;
             }
             total+=selItem.total;
         }
-       // System.assert(false,maxQtyReachError);
     }
     
     public PageReference placeOrder(){
@@ -85,7 +96,7 @@ public class EcartWorkshopController {
             insert order;
             
             List<OrderItem__c> orderItems =new List<OrderItem__c>();
-            for(wrapper selItem : selectedWrapperRecordList){
+            for(wrapper selItem : mapHoldingSelectedRecords.values()){
                 OrderItem__c item=new OrderItem__c();
                 item.OrderId__c = order.id;
                 item.Product2ID__c = selItem.productRecord.id;
@@ -153,7 +164,6 @@ public class EcartWorkshopController {
         set;
     }
     
-    
     /* Public Integer getTotalPages(){
 Decimal totalSize = setCon.getResultSize();
 Decimal pageSize = setCon.getPageSize();
@@ -185,6 +195,7 @@ return (Integer)pages.round(System.RoundingMode.CEILING);
     public void updateSearchItemsMap() {
         for(wrapper wrp : wrapperRecordList){
             if(wrp.selected){
+                wrp.qty=1;
                 mapHoldingSelectedRecords.put(wrp.productRecord.id, wrp);
             }
             if(wrp.selected == false && mapHoldingSelectedRecords.containsKey(wrp.productRecord.id)){
@@ -201,26 +212,33 @@ return (Integer)pages.round(System.RoundingMode.CEILING);
         
         if(mapHoldingSelectedRecords.containsKey(proId)){
             mapHoldingSelectedRecords.remove(proId);
-            initCart();
         }
+        init();
     }
-    
     
     public void dosearch(){
         if(search==''){
             product = fechedProduct;
             setCon=new ApexPages.StandardSetController(fechedProduct);
+          //  system.assert(false,pageNo);
+            setCon.setPageNumber(pageNo);
+            setCon.setPageSize(2);
+            init();
+            pageNo=null;
         }else{
+            if(pageNo==null)
+            pageNo=setCon.getPageNumber();
+            
             product=new List<Product2>();
             for(Product2 pro: fechedProduct){
-                if((pro.name).toLowerCase().startsWith(search.toLowerCase()))
+                if((pro.name).toLowerCase().contains(search.toLowerCase()))
                     product.add(pro); 
             }
             setCon=new ApexPages.StandardSetController(product);
+            
+            setCon.setPageSize(2);
+            init();
         }
-        setCon.setPageSize(2);
-        init();
     }
-    
     
 }

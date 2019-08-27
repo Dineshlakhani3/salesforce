@@ -11,16 +11,15 @@ trigger ClassTrigger on Class__c (before delete, after update) {
             }
         }
     }     
-    if(Trigger.isafter){
-        if(Trigger.isupdate){
+    if(Trigger.isafter && Trigger.isupdate){
             Set<ID> setOFClassID = new Set<ID>();
             for(Class__C c: Trigger.new)
             {
-                if(c.Custom_Status__c == 'Reset'){
+                if(Trigger.oldMap.get(c.Id).Custom_Status__c != 'Reset' && c.Custom_Status__c == 'Reset'){
                     setOFClassID.add(c.id);
                 }
             }
+        if(setOFClassID.size()>0)
             Delete [select id from student__c where class__r.id in :setOFClassID];
-        }
     } 
 }

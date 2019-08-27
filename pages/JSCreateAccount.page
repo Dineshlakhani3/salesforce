@@ -1,0 +1,33 @@
+<apex:page >
+      <Script src="/soap/ajax/45.0/connection.js" type="text/javascript"></Script>
+    <script>
+        function insertAcc(){
+            sforce.connection.sessionId = "{!$Api.Session_ID}";
+            
+            var account = new sforce.SObject("Account");
+            var a = document.getElementById('j_id0:frm:pb:pbs:pbsi:txtName').value;
+            account.Name = a;
+            var result = sforce.connection.create([account]);
+ 
+            if (result[0].getBoolean("success")) {
+                alert("New Account is created with id " + result[0].id);
+            }
+            else {
+                alert("failed to create new Account " + result[0]);
+            }
+        }
+    </script>
+    <apex:form id="frm">
+        <apex:pageBlock title="Insert Account" tabStyle="Account" id="pb">
+            <apex:pageBlockSection title="Account Name" columns="1" id="pbs">
+                <apex:pageBlockSectionItem id="pbsi">
+                    <apex:outputLabel value="Name" />
+                    <apex:inputText title="Name" id="txtName" />
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection> 
+            <apex:pageBlockButtons >
+                <apex:commandButton onclick="return insertAcc();" value="Save"/>
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

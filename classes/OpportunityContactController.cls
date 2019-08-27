@@ -4,6 +4,8 @@ public class OpportunityContactController {
     public List<Opportunity> oppList{get;set;}
     public String ConId;
     public OpportunityContactController(){
+        conList = new List<Contact>();
+        oppList = new List<Opportunity>();
         recordId = ApexPages.CurrentPage().getparameters().get('id');
         oppList = [select manager__r.id from opportunity where id = :recordId];
         set<ID> accSet=new set<ID>();
@@ -18,7 +20,7 @@ public class OpportunityContactController {
     public List<SelectOption> getItems() {
         List<SelectOption> options = new List<SelectOption>();
         for(Contact con : conList){
-            options.add(new SelectOption(con.id,con.FirstName));    
+            options.add(new SelectOption(con.id,con.LastName));    
         }
         return options; 
     }
@@ -34,7 +36,6 @@ public class OpportunityContactController {
             return null;
         }
     }
-    
     
     public pageReference  clearOpp(){      
         try{

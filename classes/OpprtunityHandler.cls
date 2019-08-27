@@ -8,9 +8,9 @@ public class OpprtunityHandler {
         }
         Map<Id, Id> idsMap = new Map<Id,Id>();
         if(setOfIds.size()>0){
-             list<Opportunity> OpptyLisst = new List<Opportunity>([Select id, BillToContact__r.AccountId from Opportunity where id IN : setOfIds]);
+            list<Opportunity> OpptyLisst = new List<Opportunity>([Select id, BillToContact__r.AccountId from Opportunity where id IN : setOfIds]);
             for(Opportunity opt : OpptyLisst){
-               idsMap.put(opt.Id, opt.BillToContact__r.AccountId);
+                idsMap.put(opt.Id, opt.BillToContact__r.AccountId);
             }
         } 
         
@@ -20,30 +20,26 @@ public class OpprtunityHandler {
         
     }
     
-    public static void updateOpportunity(List<Opportunity> oldListOfOppt,List<Opportunity> newListOfOppt){
-        set<Id> setOfOptIds = new set<Id>();
-        set<Id> setOfOptUpdateIds = new set<Id>();
-        
-        for(Opportunity opt : oldListOfOppt){
-            if(opt.StageName != 'Closed Won' && opt.StageName != 'Closed Lost'){
-                setOfOptIds.add(opt.Id);
+    public static void updateStatus(Map<ID,Opportunity> mapOfOpt,List<Opportunity> newListOfOppt){
+        if(mapOfOpt.size()>0){
+            List<String> adrsMails = new List<String>();
+            for(Opportunity opt : newListOfOppt){
+                // for status
+                if(mapOfOpt.containsKey(opt.Id)){
+                    if(opt.DeliveryInstallationStatus__c != mapOfOpt.get(opt.Id).DeliveryInstallationStatus__c){
+                        adrsMails.add([select owner.email from opportunity where id = :opt.id][0].owner.email);
+                    }
+                }
+                //for stage
+                if(mapOfOpt.get(opt.Id).StageName != 'Closed Won' && mapOfOpt.get(opt.Id).StageName != 'Closed Lost'){
+                    if(opt.StageName == 'Closed Won' || opt.StageName == 'Closed Lost')
+                        opt.CloseDate = System.today();
+                }
             }
-        }
-        
-        for(Opportunity opt : newListOfOppt){
-            if(opt.StageName == 'Closed Won' || opt.StageName == 'Closed Lost'){
-                if(setOfOptIds.contains(opt.Id))
-                setOfOptUpdateIds.add(opt.Id);
+            if(adrsMails.size()>0){
+               // System.assert(false,adrsMails.get(0));
+                  EmailManager.sendMail(adrsMails);
             }
-        }
-        
-        
-        if(setOfOptIds.size()>0	){
-            List<Opportunity> listOfOppoty = [select CloseDate from  opportunity where Id IN :setOfOptUpdateIds];
-            for(Opportunity opt : listOfOppoty){
-                opt.CloseDate = System.today();
-            }
-           update listOfOppoty;
-        }   
+        } 
     }
 }

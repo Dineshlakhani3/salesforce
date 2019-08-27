@@ -21,10 +21,14 @@ public class JsonController {
     ' "isShipped" : true,\n' +
     ' "modelNumber" : "123"\n' +
     '}';
+        
+        Map<Id,Student__c> listOFStd = new Map<Id,Student__c>([Select id, FirstName__C, LastName__C from Student__C]);
+      
+        jsonStr = JSON.serialize(listOFStd);
 
-        jsonStr = JSON.serialize(jsonInput);
-
-		return jsonInput;
+        Boolean a= jsonStr.equals(jsonInput);
+        System.assert(false,jsonInput+ '                   ??????????????????????????????????????     '+ jsonStr);
+		return jsonStr;
        
     }
 }

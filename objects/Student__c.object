@@ -108,6 +108,18 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Genrate_Pdf__c</fullName>
+        <externalId>false</externalId>
+        <formula>HYPERLINK(&quot;https://c.ap15.visual.force.com/apex/GenratePdf?core.apexpages.request.devconsole=1&amp;ID=&quot;&amp;Id, 
+&quot;Generate PDF&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Genrate Pdf</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>LastName__c</fullName>
         <externalId>false</externalId>
         <label>LastName</label>
@@ -193,7 +205,70 @@
         <type>AutoNumber</type>
     </nameField>
     <pluralLabel>Student</pluralLabel>
-    <searchLayouts/>
+    <searchLayouts>
+        <excludedStandardButtons>New</excludedStandardButtons>
+        <excludedStandardButtons>OpenListInQuip</excludedStandardButtons>
+        <excludedStandardButtons>Accept</excludedStandardButtons>
+        <excludedStandardButtons>ChangeOwner</excludedStandardButtons>
+        <excludedStandardButtons>MassChangeOwner</excludedStandardButtons>
+        <listViewButtons>Delete_Student</listViewButtons>
+        <listViewButtons>RemoteDelete</listViewButtons>
+        <searchResultsAdditionalFields>FirstName__c</searchResultsAdditionalFields>
+        <searchResultsCustomButtons>Delete_Student</searchResultsCustomButtons>
+    </searchLayouts>
     <sharingModel>ControlledByParent</sharingModel>
     <visibility>Public</visibility>
+    <webLinks>
+        <fullName>Click</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Click</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>alert(&apos;Hello World&apos;);</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Delete_Student</fullName>
+        <availability>online</availability>
+        <displayType>massActionButton</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Delete Student</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <requireRowSelection>true</requireRowSelection>
+        <url>var records = {!GETRECORDIDS($ObjectType.Student__c)};  
+if (records[0] == null ) {  
+alert(&quot;Please select at least one record.&quot;)  
+} else {  
+ window.location = &apos;/apex/JsScriptDeleteStudent?Id=&apos; + records;
+}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>OpenPopup</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>OpenPopup</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>var myWindow = window.open(&quot;&quot;, &quot;&quot;, &quot;width=200,height=100&quot;);
+myWindow.document.write(&quot;{!Student__c.FirstName__c} {!Student__c.LastName__c}&quot;);</url>
+    </webLinks>
+    <webLinks>
+        <fullName>RemoteDelete</fullName>
+        <availability>online</availability>
+        <displayType>massActionButton</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>RemoteDelete</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <requireRowSelection>true</requireRowSelection>
+        <url>var records = {!GETRECORDIDS($ObjectType.Student__c)};  
+if (records[0] == null ) {  
+alert(&quot;Please select at least one record.&quot;)  
+} else {  
+ window.location = &apos;/apex/JSRemoteStudentDelete?Id=&apos; + records;
+}</url>
+    </webLinks>
 </CustomObject>

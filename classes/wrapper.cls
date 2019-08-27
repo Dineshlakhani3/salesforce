@@ -1,6 +1,7 @@
 global  class wrapper{
     public Boolean selected{get;set;}
     public Decimal qty{get;set;}
+    public Decimal remainqty{get;set;}
     public Decimal total{get;set;}
     public Product2 productRecord {get;set;}
     
@@ -8,5 +9,6 @@ global  class wrapper{
         this.qty=qty;
         this.productRecord = productRecord;
         this.selected = selected;
+        this.remainqty=productRecord.quantity_Available__c-qty;
     }
 }

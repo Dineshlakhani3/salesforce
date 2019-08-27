@@ -1,0 +1,32 @@
+<apex:page >
+    <Script src="/soap/ajax/45.0/connection.js" type="text/javascript"></Script>
+    <script>
+    function CreateStudent(){
+        sforce.connection.sessionId = "{!$Api.Session_ID}";
+        var p = document.getElementById("{!$Component.stdform.stdblk.Name}").value;
+        if(p != '' && p!=null){
+            var std= new sforce.SObject("Student__c");
+            std.Lastname__c = p;
+            std.class__c = location.search.substr(4);
+            var result = sforce.connection.upsert("Id", [std]);
+            alert('Students Created Successfully');
+            var daddy = window.self;
+            daddy.opener = window.self;
+            daddy.close();
+        }else{
+            alert('Please enter a value');    
+        }
+    }
+    window.onunload = refreshParent;
+    function refreshParent() {
+        window.opener.location.reload();
+    }
+    
+    </script>
+    <apex:form id="stdform">
+        <apex:pageBlock id="stdblk">
+            <apex:inputText id="Name"/>
+            <Button onclick="return CreateStudent();">Continue</Button>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>
